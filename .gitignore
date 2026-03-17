@@ -20,6 +20,9 @@ data/
 Thumbs.db
 desktop.ini
 
+# Claude Code (outils dev locaux, ne pas exposer)
+.claude/
+
 # Editors
 .vscode/
 .idea/

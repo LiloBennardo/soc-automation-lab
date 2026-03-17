@@ -5,11 +5,11 @@
 ### Stack Principale
 
 <p>
-  <img src="https://www.vectorlogo.zone/logos/wazuh/wazuh-icon.svg" alt="Wazuh" width="60" height="60"/>
+  <img src="assets/wazuh.png" alt="Wazuh" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
-  <img src="https://avatars.githubusercontent.com/u/43869469?s=200&v=4" alt="Shuffle" width="60" height="60"/>
+  <img src="assets/shuffle.jpg" alt="Shuffle" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
-  <img src="https://strangebee.com/wp-content/uploads/2022/12/thehive-logo.png" alt="TheHive" width="60" height="60"/>
+  <img src="assets/thehive.png" alt="TheHive" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
   <img src="https://www.vectorlogo.zone/logos/virustotal/virustotal-icon.svg" alt="VirusTotal" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
