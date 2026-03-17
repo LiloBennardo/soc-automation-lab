@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wazuh",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "docker/wazuh-docker-compose.yml", "up"],
+      "port": 443
+    },
+    {
+      "name": "shuffle",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "docker/shuffle-docker-compose.yml", "up"],
+      "port": 3001
+    },
+    {
+      "name": "thehive",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "docker/thehive-docker-compose.yml", "up"],
+      "port": 9000
+    }
+  ]
+}

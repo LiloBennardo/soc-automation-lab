@@ -1,0 +1,37 @@
+# ============================================================
+# SOC Automation Lab — .gitignore
+# ============================================================
+
+# Secrets & credentials
+.env
+*.key
+*.p12
+*.pfx
+
+# SSL certificates (generated at deploy time via wazuh-docker)
+config/wazuh_indexer_ssl_certs/
+
+# Docker volumes & runtime data
+volumes/
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.env/
+venv/

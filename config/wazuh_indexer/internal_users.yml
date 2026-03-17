@@ -1,0 +1,30 @@
+# IMPORTANT : Ce fichier est généré automatiquement par deploy.sh
+# via le script wazuh-docker/generate-indexer-certs.yml
+# Les hashes bcrypt correspondent aux mots de passe définis dans .env
+#
+# Pour régénérer manuellement :
+#   docker run --rm -it wazuh/wazuh-indexer:4.9.2 bash
+#   /usr/share/wazuh-indexer/plugins/opensearch-security/tools/hash.sh -p <votre_password>
+
+_meta:
+  type: "internalusers"
+  config_version: 2
+
+admin:
+  hash: "$2y$12$K/SpwjtB.wOHJ/Nc6GVRDuc1h0rM1DfvziFRNPtk27P.c4yDr9njO"
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Wazuh admin user"
+
+kibanaserver:
+  hash: "$2y$12$K/SpwjtB.wOHJ/Nc6GVRDuc1h0rM1DfvziFRNPtk27P.c4yDr9njO"
+  reserved: true
+  description: "OpenSearch Dashboards user"
+
+wazuh:
+  hash: "$2y$12$K/SpwjtB.wOHJ/Nc6GVRDuc1h0rM1DfvziFRNPtk27P.c4yDr9njO"
+  reserved: false
+  backend_roles:
+    - "admin"
+  description: "Wazuh API user"
