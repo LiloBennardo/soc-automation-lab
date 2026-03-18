@@ -5,11 +5,11 @@
 ### Stack Principale
 
 <p>
-  <img src="assets/wazuh.png" alt="Wazuh" width="60" height="60"/>
+  <img src="screenshots/wazuh.png" alt="Wazuh" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
-  <img src="assets/shuffle.jpg" alt="Shuffle" width="60" height="60"/>
+  <img src="screenshots/shuffle.jpg" alt="Shuffle" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
-  <img src="assets/thehive.png" alt="TheHive" width="60" height="60"/>
+  <img src="screenshots/thehive.png" alt="TheHive" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
   <img src="https://www.vectorlogo.zone/logos/virustotal/virustotal-icon.svg" alt="VirusTotal" width="60" height="60"/>
   &nbsp;&nbsp;&nbsp;
@@ -835,10 +835,6 @@ soc-automation-lab/
 ├── deploy.sh                           # 🚀 Déploiement automatique
 ├── stop.sh                             # 🛑 Arrêt des services
 ├── .env.example                        # Template des variables d'environnement
-├── assets/
-│   ├── wazuh.png                       # Logo Wazuh
-│   ├── shuffle.jpg                     # Logo Shuffle
-│   └── thehive.png                     # Logo TheHive
 ├── rules/
 │   └── custom_local_rules.xml          # 11 règles MITRE ATT&CK
 ├── config/
@@ -863,7 +859,10 @@ soc-automation-lab/
     ├── thehive-dashboard.png
     ├── thehive-alerts.png
     ├── testatomic.png                  # Tests Atomic Red Team
-    └── atomic.png                      # Pipeline détection Atomic
+    ├── atomic.png                      # Pipeline détection Atomic
+    ├── wazuh.png                       # Logo Wazuh
+    ├── shuffle.jpg                     # Logo Shuffle
+    └── thehive.png                     # Logo TheHive
 ```
 
 ---
