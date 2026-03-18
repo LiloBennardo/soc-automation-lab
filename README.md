@@ -671,6 +671,139 @@ swap=4GB
 
 ---
 
+## ⚔️ Atomic Red Team — Simulation d'Attaques Réelles
+
+[Atomic Red Team](https://github.com/redcanaryco/invoke-atomicredteam) est une bibliothèque de tests développée par Red Canary qui simule des techniques d'attaque MITRE ATT&CK réelles sur la machine Windows — sans danger pour le système.
+
+> **Objectif** : Vérifier que chaque règle Wazuh détecte bien les attaques qu'elle est censée couvrir.
+
+### Installation
+
+```powershell
+# Installer le module
+IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1' -UseBasicParsing)
+Install-AtomicRedTeam -getAtomics -Force
+
+# Ajouter exclusion Defender pour le dossier de test
+Add-MpPreference -ExclusionPath "C:\AtomicRedTeam"
+
+# Désactiver Defender temporairement pour les tests
+Set-MpPreference -DisableRealtimeMonitoring $true
+```
+
+---
+
+### Tests Effectués
+
+#### 🔴 T1547.001 — Persistance via Registre Run
+
+**Objectif** : Simuler l'ajout d'une clé de persistance dans `HKCU\...\CurrentVersion\Run`
+
+```powershell
+Import-Module "C:\AtomicRedTeam\invoke-atomicredteam\Invoke-AtomicRedTeam.psd1"
+Invoke-AtomicTest T1547.001 -TestNumbers 1
+```
+
+**Résultat Atomic Red Team :**
+```
+Executing test: T1547.001-1 Reg Key Run
+L'opération a réussi.
+Exit code: 0
+Done executing test: T1547.001-1 Reg Key Run
+```
+
+**Détection Wazuh :**
+```json
+{
+  "rule.id": "92302",
+  "rule.description": "Registry entry to be executed on next logon was modified",
+  "data.win.eventdata.targetObject": "HKU\\...\\CurrentVersion\\Run\\Atomic Red Team",
+  "data.win.eventdata.details": "C:\\Path\\AtomicRedTeam.exe",
+  "rule.mitre.id": "T1547.001",
+  "rule.mitre.tactic": "Persistence, Privilege Escalation"
+}
+```
+
+✅ **Détecté** — Sysmon Event ID 13 (Registry value set) capturé par Wazuh
+
+<!-- SCREENSHOT : Test Atomic Red Team + résultats -->
+![Atomic Red Team Tests](screenshots/testatomic.png)
+
+---
+
+#### 🔴 T1059.001 — PowerShell Obfusqué
+
+**Objectif** : Simuler l'exécution de commandes PowerShell suspectes
+
+```powershell
+Invoke-AtomicTest T1059.001 -TestNumbers 1
+```
+
+**Détection Wazuh :**
+```json
+{
+  "rule.id": "100001",
+  "rule.description": "PowerShell suspect - Commande obfusquée ou téléchargement détecté",
+  "rule.level": 12,
+  "rule.mitre.id": "T1059.001",
+  "rule.mitre.tactic": "Execution"
+}
+```
+
+✅ **Détecté** — Rule custom 100001 déclenchée, level 12
+
+---
+
+### Pipeline de Détection Complet
+
+```
+Atomic Red Team (attaque simulée)
+         ↓
+    Sysmon (télémétrie)
+         ↓
+  Wazuh Agent (collecte)
+         ↓
+ Wazuh Manager (analyse + règle MITRE)
+         ↓
+    Shuffle SOAR
+    ↙           ↘
+TheHive        Email enrichi
+(ticket)       (analyste)
+```
+
+<!-- SCREENSHOT : Dashboard Wazuh avec alertes Atomic Red Team -->
+![Atomic Red Team Pipeline](screenshots/atomic.png)
+
+---
+
+### Résultats des Tests
+
+| Technique | Description | Résultat | Rule Wazuh | Level |
+|-----------|-------------|----------|------------|-------|
+| T1547.001 | Persistance registre Run | ✅ Détecté | 92302 | 6 |
+| T1059.001 | PowerShell obfusqué | ✅ Détecté | 100001 | 12 |
+
+---
+
+### Cleanup — Suppression des Traces
+
+```powershell
+# Cleanup des tests
+Invoke-AtomicTest T1547.001 -TestNumbers 1 -Cleanup
+Invoke-AtomicTest T1059.001 -TestNumbers 1 -Cleanup
+
+# Réactiver Windows Defender
+Set-MpPreference -DisableRealtimeMonitoring $false
+
+# Supprimer Atomic Red Team
+Remove-Item -Path "C:\AtomicRedTeam" -Recurse -Force
+Remove-MpPreference -ExclusionPath "C:\AtomicRedTeam"
+```
+
+> ⚠️ **Note sécurité** : Toujours réactiver Defender et supprimer les fichiers de test après utilisation en lab.
+
+---
+
 ## 📊 Résultats
 
 ### Volume d'alertes générées
@@ -701,6 +834,11 @@ soc-automation-lab/
 ├── README.md
 ├── deploy.sh                           # 🚀 Déploiement automatique
 ├── stop.sh                             # 🛑 Arrêt des services
+├── .env.example                        # Template des variables d'environnement
+├── assets/
+│   ├── wazuh.png                       # Logo Wazuh
+│   ├── shuffle.jpg                     # Logo Shuffle
+│   └── thehive.png                     # Logo TheHive
 ├── rules/
 │   └── custom_local_rules.xml          # 11 règles MITRE ATT&CK
 ├── config/
@@ -710,8 +848,8 @@ soc-automation-lab/
 │   ├── shuffle-docker-compose.yml      # Stack Shuffle
 │   └── thehive-docker-compose.yml      # Stack TheHive
 ├── playbooks/
-│   ├── workflow-email-thehive.json     # Workflow Shuffle 1
-│   └── workflow-virustotal.json        # Workflow Shuffle 2
+│   ├── Wazuh-Alert-PowerShell.json     # Workflow Shuffle 1 — Email + TheHive
+│   └── Wazuh - Sysmon Malware Analysis.json  # Workflow Shuffle 2 — VirusTotal
 └── screenshots/
     ├── wazuh-dashboard.png
     ├── wazuh-agent.png
@@ -723,7 +861,9 @@ soc-automation-lab/
     ├── email-alerte.png
     ├── email-wannacry-enrichi.png
     ├── thehive-dashboard.png
-    └── thehive-alerts.png
+    ├── thehive-alerts.png
+    ├── testatomic.png                  # Tests Atomic Red Team
+    └── atomic.png                      # Pipeline détection Atomic
 ```
 
 ---
@@ -758,7 +898,7 @@ soc-automation-lab/
 - [x] **Shuffle SOAR** — Automatisation des réponses ✅
 - [x] **VirusTotal** — Enrichissement Threat Intelligence ✅
 - [x] **TheHive** — Gestion de tickets d'incidents ✅
-- [ ] **Atomic Red Team** — Simulation d'attaques MITRE ATT&CK réelles
+- [x] **Atomic Red Team** — Simulation d'attaques MITRE ATT&CK réelles ✅
 - [ ] **Blocage IP automatique** — Réponse active via Shuffle
 - [ ] **Dashboard MITRE ATT&CK** — Visualisation des techniques détectées
 - [ ] **Corrélation multi-alertes** — Détection de chaînes d'attaque complètes
